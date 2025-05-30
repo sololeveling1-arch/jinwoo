@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Birthday Wishes</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ffd700 url('cute-teddy-bear-cake-decoration-yellow-background-pastel-colors-festive-atmosphere-balloons-candy-floral-accents-copy-space-cute-354727451.webp') no-repeat center center/cover;
+      font-family: 'Times New Roman', Times, serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .wish-box {
+      background: rgba(255, 182, 193, 0.9);
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      animation: popIn 1s ease;
+      position: relative;
+      z-index: 10;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.5) rotate(-5deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 25px;
+      animation: bounceIn 1s ease;
+      text-shadow: 2px 2px 8px rgba(255, 105, 180, 0.8);
+    }
+
+    @keyframes bounceIn {
+      0% { transform: translateY(-80px); opacity: 0; }
+      60% { transform: translateY(20px); opacity: 1; }
+      100% { transform: translateY(0); }
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #ff69b4;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 0 15px #ff69b4, 0 0 30px #ff1493;
+      animation: glow 1.5s infinite alternate;
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #ff69b4; }
+      to { box-shadow: 0 0 25px #ff1493; }
+    }
+
+    button:hover:enabled {
+      background-color: #ff1493;
+      transform: scale(1.05);
+    }
+
+    button:disabled {
+      background-color: #d3d3d3;
+      cursor: not-allowed;
+      box-shadow: none;
+      animation: none;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      color: red;
+      animation: floatCreative 3s ease-out forwards;
+      z-index: 11;
+      pointer-events: none;
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    @keyframes floatCreative {
+      0% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      25% {
+        transform: translateY(-40px) translateX(-10px) scale(1.2) rotate(20deg);
+        opacity: 0.9;
+      }
+      50% {
+        transform: translateY(-80px) translateX(10px) scale(1.3) rotate(-20deg);
+        opacity: 0.8;
+      }
+      75% {
+        transform: translateY(-110px) translateX(-5px) scale(1.1) rotate(15deg);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-150px) scale(0.8) rotate(0deg);
+        opacity: 0;
+      }
+    }
+
+    .floating-heart {
+      position: fixed;
+      font-size: 18px;
+      color: #ff1493;
+      animation: floatAround 10s infinite ease-in-out;
+      z-index: 6;
+      pointer-events: none;
+      opacity: 0.8;
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    @keyframes floatAround {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+      50% { transform: translateY(-25px) rotate(15deg); opacity: 1; }
+      100% { transform: translateY(0) rotate(-15deg); opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="wish-box" id="wishBox">
+    <h1 id="wish">🎉 Happy Birthday! Wishing you joy and smiles! 🎂</h1>
+    <button id="nextBtn" onclick="nextWish()">Click</button>
+  </div>
+
+  <script>
+    const wishes = [
+      "🎉 Happy Birthday! Wishing you joy and smiles! 🎂",
+      "🌸 May your birthday overflow with happiness and love!",
+      "🎁 You're a gift to everyone who knows you!",
+      "💖 Shine bright like the star you are!",
+      "🎈 Let the celebrations be endless — you deserve it!",
+      "🍰 Eat cake, laugh loud, live fully!"
+    ];
+
+    let index = 0;
+
+    function nextWish() {
+      index++;
+      triggerConfetti();
+      triggerHearts();
+      const wishEl = document.getElementById("wish");
+      if (index < wishes.length) {
+        wishEl.style.animation = "none";
+        void wishEl.offsetWidth;
+        wishEl.textContent = wishes[index];
+        wishEl.style.animation = "bounceIn 1s ease";
+        if (index === wishes.length - 1) {
+          document.getElementById("nextBtn").textContent = "Last 🎉";
+        }
+      } else {
+        document.getElementById("nextBtn").textContent = "No more wishes 🎉";
+        document.getElementById("nextBtn").disabled = true;
+      }
+    }
+
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    let confetti = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function createConfettiPiece() {
+      return {
+        x: Math.random() * canvas.width,
+        y: -10,
+        size: Math.random() * 8 + 2,
+        color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+        speedY: Math.random() * 3 + 2,
+        speedX: Math.random() * 2 - 1,
+        rotation: Math.random() * 360,
+        rotationSpeed: Math.random() * 10 - 5
+      };
+    }
+
+    function updateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach((c, i) => {
+        c.x += c.speedX;
+        c.y += c.speedY;
+        c.rotation += c.rotationSpeed;
+
+        ctx.save();
+        ctx.translate(c.x, c.y);
+        ctx.rotate((c.rotation * Math.PI) / 180);
+        ctx.fillStyle = c.color;
+        ctx.fillRect(-c.size / 2, -c.size / 2, c.size, c.size);
+        ctx.restore();
+
+        if (c.y > canvas.height) confetti.splice(i, 1);
+      });
+    }
+
+    function triggerConfetti() {
+      for (let i = 0; i < 100; i++) {
+        confetti.push(createConfettiPiece());
+      }
+    }
+
+    function animate() {
+      updateConfetti();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    function triggerHearts() {
+      for (let i = 0; i < 16; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerText = "💖";
+
+        const offsetX = Math.random() * window.innerWidth;
+        heart.style.left = offsetX + "px";
+        heart.style.top = window.innerHeight + "px";
+        heart.style.fontSize = (Math.random() * 10 + 16) + "px";
+
+        document.body.appendChild(heart);
+        setTimeout(() => {
+          heart.remove();
+        }, 3200);
+      }
+    }
+
+    function addFloatingHearts() {
+      const positions = [
+        { top: '5%', left: '5%' },
+        { top: '15%', right: '8%' },
+        { bottom: '10%', left: '10%' },
+        { bottom: '15%', right: '5%' },
+        { top: '30%', left: '2%' },
+        { top: '35%', right: '3%' },
+        { bottom: '5%', left: '25%' },
+        { top: '45%', right: '5%' },
+        { top: '60%', left: '3%' },
+        { bottom: '30%', right: '2%' }
+      ];
+
+      positions.forEach(pos => {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.innerText = '💖';
+        Object.assign(heart.style, pos, {
+          fontSize: `${16 + Math.random() * 12}px`,
+          animationDelay: `${Math.random() * 5}s`
+        });
+        document.body.appendChild(heart);
+      });
+    }
+
+    addFloatingHearts();
+  </script>
+
+</body>
+</html>
